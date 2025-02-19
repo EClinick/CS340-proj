@@ -1,15 +1,8 @@
 import { Link } from "react-router-dom";
-import { MdEvent } from "react-icons/md";
 
-const Navbar = () => {
+function Navbar() {
   return (
     <header>
-      <div>
-        <Link to="/">
-          <MdEvent size={80} />
-        </Link>
-      </div>
-      <h1 style={{ color: 'white' }}>Event Management System</h1>
       <nav>
         <ul>
           <li><Link to="/">Home</Link></li>
@@ -20,8 +13,9 @@ const Navbar = () => {
           <li><Link to="/event_attendees">Event Attendees</Link></li>
         </ul>
       </nav>
+      <button className="back-button" onClick={() => window.history.back()}>Back</button>
     </header>
   );
-};
+}
 
-export default Navbar;
+export default Navbar; 
