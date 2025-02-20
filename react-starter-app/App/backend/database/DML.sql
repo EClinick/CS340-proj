@@ -24,7 +24,7 @@ FROM Events e
 JOIN Venues v ON e.venueID = v.venueID
 ORDER BY e.eventDate DESC;
 
--- SELECT: Retrieve a single event
+-- SELECT: Retrieve a single event with their corresponding venue name
 SELECT eventID, e.eventName, e.eventDate, v.venueName, e.eventDescription
 FROM Events e
 JOIN Venues v ON e.venueID = v.venueID
@@ -131,15 +131,15 @@ INSERT INTO Venues (venueName, location, capacity)
 VALUES (:venueNameInput, :locationInput, :capacityInput);
 
 -- SELECT: Retrieve all venues
-SELECT v.venueName, v.location, v.capacity 
-FROM Venues v
-ORDER BY v.venueName;
+SELECT venueName, location, capacity 
+FROM Venues
+ORDER BY venueName;
 
 -- SELECT: Retrieve single venue
-SELECT v.venueName, v.location, v.capacity
-FROM Venues v
+SELECT venueName, location, capacity
+FROM Venues
 WHERE venueID = :venueIDInput
-ORDER BY v.venueName;
+ORDER BY venueName;
 
 -- UPDATE: Update an existing venue
 UPDATE Venues
