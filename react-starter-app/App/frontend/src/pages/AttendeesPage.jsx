@@ -38,21 +38,21 @@ function AttendeesPage() {
   };
 
   // Create attendee
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}attendees`, newAttendee);
-      setNewAttendee({
-        fName: '',
-        lName: '',
-        email: ''
-      });
-      fetchAttendees();
-    } catch (err) {
-      setError('Failed to create attendee');
-      console.error('Error creating attendee:', err);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_API_URL}attendees`, newAttendee);
+  //     setNewAttendee({
+  //       fName: '',
+  //       lName: '',
+  //       email: ''
+  //     });
+  //     fetchAttendees();
+  //   } catch (err) {
+  //     setError('Failed to create attendee');
+  //     console.error('Error creating attendee:', err);
+  //   }
+  // };
 
   // Update attendee
   const handleUpdate = async (attendeeID) => {
@@ -152,7 +152,7 @@ function AttendeesPage() {
                 <td>{`${attendee.fName} ${attendee.lName}`}</td>
                 <td>{attendee.email}</td>
                 <td>
-                  <button className="edit-button action-button" onClick={() => handleUpdate(attendee.attendeeID)}>Edit</button>
+                  <button className="edit-button action-button">Edit</button>
                   <button className="delete-button action-button" onClick={() => handleDelete(attendee.attendeeID)}>Delete</button>
                   <select
                     className="register-select"
