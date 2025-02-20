@@ -3,7 +3,7 @@ const db = require('../database/db-connector');
 // Get all venues
 const getVenues = async (req, res) => {
     try {
-        const [venues] = await db.query('SELECT * FROM Venues');
+        const [venues] = await db.query('SELECT venueName, location, capacity FROM Venues ORDER BY venueName');
         res.json(venues);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -13,7 +13,12 @@ const getVenues = async (req, res) => {
 // Get a single venue
 const getVenue = async (req, res) => {
     try {
-        const [venue] = await db.query('SELECT * FROM Venues WHERE venueID = ?', [req.params.id]);
+        const [venue] = await db.query(`
+            SELECT venueName, location, capacity
+            FROM Venues 
+            WHERE venueID = ?
+            ORDER BY venueName
+            `, [req.params.id]);
         if (venue.length === 0) {
             return res.status(404).json({ message: 'Venue not found' });
         }

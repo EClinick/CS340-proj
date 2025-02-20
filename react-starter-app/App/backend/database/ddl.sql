@@ -15,7 +15,8 @@ CREATE OR REPLACE TABLE Venues (
     venueID INT AUTO_INCREMENT PRIMARY KEY,
     venueName VARCHAR(100) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    capacity INT NOT NULL
+    capacity INT NOT NULL,
+    CONSTRAINT singleVenue UNIQUE (venueName, location)
 );
 
 -- Create table for Events

@@ -57,6 +57,17 @@ function EventsPage() {
     }
   };
 
+  // Update event
+  const handleUpdate = async (eventID) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}events/${eventID}`, newEvent);
+      fetchEvents();
+    } catch (err) {
+      setError('Failed to update event');
+      console.error('Error updating event:', err);
+    }
+  }
+
   // Delete event
   const handleDelete = async (eventID) => {
     try {
@@ -151,6 +162,7 @@ function EventsPage() {
                 <td>{event.venueName}</td>
                 <td>{event.eventDescription}</td>
                 <td>
+                  <button className='edit-button' onClick={() => handleUpdate(event.eventID)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(event.eventID)}>Delete</button>
                 </td>
               </tr>

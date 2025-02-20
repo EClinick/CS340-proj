@@ -54,6 +54,7 @@ function HomePage() {
           <li>Create and organize events</li>
           <li>Register attendees for events</li>
           <li>Manage speakers and their assignments</li>
+          <li>View and manage which events attendees are planning to go to.</li>
         </ul>
       </div>
     </div>

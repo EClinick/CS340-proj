@@ -4,9 +4,10 @@ const db = require('../database/db-connector');
 const getEvents = async (req, res) => {
     try {
         const [events] = await db.query(`
-            SELECT e.*, v.venueName, v.location, v.capacity 
+            SELECT e.eventName, e.eventDate, e.eventDescription, v.venueName, v.location, v.capacity 
             FROM Events e 
             JOIN Venues v ON e.venueID = v.venueID
+            ORDER BY e.eventDate DESC
         `);
         res.json(events);
     } catch (error) {
@@ -18,10 +19,11 @@ const getEvents = async (req, res) => {
 const getEvent = async (req, res) => {
     try {
         const [event] = await db.query(`
-            SELECT e.*, v.venueName, v.location, v.capacity 
+            SELECT e.eventName, e.eventDate, e.eventDescription, v.venueName, v.location, v.capacity 
             FROM Events e 
             JOIN Venues v ON e.venueID = v.venueID 
             WHERE e.eventID = ?
+            ORDER BY e.eventDate DESC
         `, [req.params.id]);
         
         if (event.length === 0) {
@@ -30,13 +32,13 @@ const getEvent = async (req, res) => {
 
         // Get speakers for this event
         const [speakers] = await db.query(
-            'SELECT * FROM Speakers WHERE eventID = ?',
+            'SELECT s.fName, s.lName, specialization FROM Speakers WHERE eventID = ?',
             [req.params.id]
         );
 
         // Get attendees for this event
         const [attendees] = await db.query(`
-            SELECT a.* 
+            SELECT a.attendeeID, a.fName, a.lName, a.email 
             FROM Attendees a
             JOIN EventAttendees ea ON a.attendeeID = ea.attendeeID
             WHERE ea.eventID = ?

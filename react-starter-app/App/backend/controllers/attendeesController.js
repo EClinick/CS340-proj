@@ -3,7 +3,7 @@ const db = require('../database/db-connector');
 // Get all attendees
 const getAttendees = async (req, res) => {
     try {
-        const [attendees] = await db.query('SELECT * FROM Attendees');
+        const [attendees] = await db.query('SELECT a.fName, a.lName, email FROM Attendees ORDER BY a.lName');
         res.json(attendees);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -13,7 +13,12 @@ const getAttendees = async (req, res) => {
 // Get a single attendee with their events
 const getAttendee = async (req, res) => {
     try {
-        const [attendee] = await db.query('SELECT * FROM Attendees WHERE attendeeID = ?', [req.params.id]);
+        const [attendee] = await db.query(`
+            SELECT a.fName, a.lName, email 
+            FROM Attendees 
+            WHERE attendeeID = ?
+            ORDER BY a.lName`
+            , [req.params.attendeeID]);
         if (attendee.length === 0) {
             return res.status(404).json({ message: 'Attendee not found' });
         }

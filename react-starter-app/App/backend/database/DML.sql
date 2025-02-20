@@ -19,17 +19,17 @@ INSERT INTO Events (eventName, eventDate, venueID, eventDescription)
 VALUES (:eventNameInput, :eventDateInput, :venueIDInput, :eventDescriptionInput);
 
 -- SELECT: Retrieve all events with their corresponding venue names
-SELECT e.eventID, e.eventName, e.eventDate, v.venueName, e.eventDescription
+SELECT e.eventName, e.eventDate, v.venueName, e.eventDescription
 FROM Events e
-JOIN Venues v ON e.venueID = v.venueID;
-
--- SELECT: Retrieve all events
-SELECT * FROM Events;
+JOIN Venues v ON e.venueID = v.venueID
+ORDER BY e.eventDate DESC;
 
 -- SELECT: Retrieve a single event
-SELECT *
-FROM Events
-WHERE eventID = :eventIDInput;
+SELECT eventID, e.eventName, e.eventDate, v.venueName, e.eventDescription
+FROM Events e
+JOIN Venues v ON e.venueID = v.venueID
+WHERE e.eventName = :eventNameInput
+ORDER BY e.eventDate DESC;
 
 -- UPDATE: Update an existing event
 UPDATE Events
@@ -59,12 +59,15 @@ INSERT INTO Attendees (fName, lName, email)
 VALUES (:firstNameInput, :lastNameInput, :emailInput);
 
 -- SELECT: Retrieve all attendees
-SELECT * FROM Attendees;
+SELECT a.fName, a.lName, email 
+FROM Attendees a
+ORDER BY a.lName;
 
 -- SELECT: Retrieve single attendee
-SELECT *
-FROM Attendees
-WHERE attendeeID = :attendeeIDInput;
+SELECT a.fName, a.lName, email
+FROM Attendees a
+WHERE attendeeID = :attendeeIDInput
+ORDER BY a.lName;
 
 -- UPDATE: Update attendee details
 UPDATE Attendees
@@ -92,12 +95,15 @@ INSERT INTO Speakers (eventID, fName, lName, specialization)
 VALUES (:eventIDInput, :firstNameInput, :lastNameInput, :specializationInput);
 
 -- SELECT: Retrieve all speakers
-SELECT * FROM Speakers;
+SELECT s.fName, s.lName, specialization
+FROM Speakers s
+ORDER BY s.lName;
 
 -- SELECT: Retrieve single speaker
-SELECT *
-FROM Speakers
-WHERE speakerID = :speakerIDInput;
+SELECT s.fName, s.lName, specialization
+FROM Speakers s
+WHERE speakerID = :speakerIDInput
+ORDER BY s.lName;
 
 -- UPDATE: Update an existing speaker
 UPDATE Speakers
@@ -125,12 +131,15 @@ INSERT INTO Venues (venueName, location, capacity)
 VALUES (:venueNameInput, :locationInput, :capacityInput);
 
 -- SELECT: Retrieve all venues
-SELECT * FROM Venues;
+SELECT v.venueName, v.location, v.capacity 
+FROM Venues v
+ORDER BY v.venueName;
 
 -- SELECT: Retrieve single venue
-SELECT *
-FROM Venues
-WHERE venueID = :venueIDInput;
+SELECT v.venueName, v.location, v.capacity
+FROM Venues v
+WHERE venueID = :venueIDInput
+ORDER BY v.venueName;
 
 -- UPDATE: Update an existing venue
 UPDATE Venues
@@ -157,15 +166,22 @@ INSERT INTO EventAttendees (eventID, attendeeID)
 VALUES (:eventIDInput, :attendeeIDInput);
 
 -- SELECT: Retrieve all EventAttendee relationships
-SELECT * FROM EventAttendees;
+SELECT ea.eventID, e.eventName, a.fName as firstName, a.lName as lastName, a.email
+FROM EventAttendees ea
+    JOIN Events e ON ea.eventID = e.eventID
+    JOIN Attendees a ON ea.attendeeID = a.attendeeID
+ORDER BY a.lName;
 
 -- SELECT: Retrieve single EventAttendee relationship
-SELECT *
-FROM EventAttendees
+SELECT ea.eventID, e.eventName, a.fName as firstName, a.lName as lastName, a.email
+FROM EventAttendees ea
+    JOIN Events e ON ea.eventID = e.eventID
+    JOIN Attendees a ON ea.attendeeID = a.attendeeID
 WHERE 
-    eventID = :eventIDInput
+    ea.eventID = :eventIDInput
     AND
-    attendeeID = :attendeeIDInput;
+    ea.attendeeID = :attendeeIDInput
+ORDER BY a.lName;
 
 -- DELETE: Delete an EventAttendee relationship
 DELETE FROM EventAttendees

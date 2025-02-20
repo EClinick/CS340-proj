@@ -35,6 +35,17 @@ const VenuesPage = () => {
     }
   };
 
+  // Edit venue
+  const handleEdit = async (venueID) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}venues/${venueID}`, newVenue);
+      fetchVenues();
+    } catch (err) {
+      setError('Failed to update venue');
+      console.error('Error updating venue:', err);
+    }
+  }
+
   // Delete venue
   const handleDelete = async (venueID) => {
     try {
@@ -111,6 +122,7 @@ const VenuesPage = () => {
                 <td>{venue.location}</td>
                 <td>{venue.capacity}</td>
                 <td>
+                  <button className="edit-button" onClick={() => handleEdit(venue.venueID)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(venue.venueID)}>Delete</button>
                 </td>
               </tr>

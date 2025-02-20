@@ -54,6 +54,17 @@ function AttendeesPage() {
     }
   };
 
+  // Update attendee
+  const handleUpdate = async (attendeeID) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}attendees/${attendeeID}`, newAttendee);
+      fetchAttendees();
+    } catch (err) {
+      setError('Failed to update attendee');
+      console.error('Error updating attendee:', err);
+    }
+  }
+
   // Delete attendee
   const handleDelete = async (attendeeID) => {
     try {
@@ -126,6 +137,7 @@ function AttendeesPage() {
       {/* Attendees List */}
       <div className="list-section">
         <h2>Existing Attendees</h2>
+        
         <table>
           <thead>
             <tr>
@@ -140,6 +152,7 @@ function AttendeesPage() {
                 <td>{`${attendee.fName} ${attendee.lName}`}</td>
                 <td>{attendee.email}</td>
                 <td>
+                  <button className="edit-button action-button" onClick={() => handleUpdate(attendee.attendeeID)}>Edit</button>
                   <button className="delete-button action-button" onClick={() => handleDelete(attendee.attendeeID)}>Delete</button>
                   <select
                     className="register-select"

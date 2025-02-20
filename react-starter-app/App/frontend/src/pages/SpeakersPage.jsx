@@ -56,6 +56,17 @@ function SpeakersPage() {
     }
   };
 
+  // Edit speaker
+  const handleEdit = async (speakerID) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`, newSpeaker);
+      fetchSpeakers();
+    } catch (err) {
+      setError('Failed to update speaker');
+      console.error('Error updating speaker:', err);
+    }
+  };
+
   // Delete speaker
   const handleDelete = async (speakerID) => {
     try {
@@ -148,6 +159,7 @@ function SpeakersPage() {
                 <td>{speaker.specialization}</td>
                 <td>{speaker.eventName}</td>
                 <td>
+                  <button className='edit-button' onClick={() => handleEdit(speaker.speakerID)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(speaker.speakerID)}>Delete</button>
                 </td>
               </tr>

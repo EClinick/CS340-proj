@@ -9,6 +9,7 @@ const getEventAttendees = async (req, res) => {
             FROM EventAttendees ea
             JOIN Events e ON ea.eventID = e.eventID
             JOIN Attendees a ON ea.attendeeID = a.attendeeID
+            ORDER BY a.lName
         `);
         res.json(eventAttendees);
     } catch (error) {
@@ -72,6 +73,7 @@ const createEventAttendee = async (req, res) => {
             JOIN Events e ON ea.eventID = e.eventID
             JOIN Attendees a ON ea.attendeeID = a.attendeeID
             WHERE ea.eventID = ? AND ea.attendeeID = ?
+            ORDER BY a.lName
         `, [eventID, attendeeID]);
 
         res.status(201).json({
