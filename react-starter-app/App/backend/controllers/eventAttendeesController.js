@@ -90,6 +90,19 @@ const createEventAttendee = async (req, res) => {
     }
 };
 
+//! Update an event-attendee relationship
+const updateEventAttendee = async (req, res) => {
+    const { eventID, attendeeID } = req.body;
+    try {
+        const [result] = await db.query(
+            'UPDATE EventAttendees SET eventID = ?, attendeeID = ? WHERE eventID = ? AND attendeeID = ?',
+            [eventID, attendeeID]
+        );
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Delete an event-attendee relationship
 const deleteEventAttendee = async (req, res) => {
     const { eventID, attendeeID } = req.body;
@@ -110,5 +123,6 @@ const deleteEventAttendee = async (req, res) => {
 module.exports = {
     getEventAttendees,
     createEventAttendee,
+    updateEventAttendee,
     deleteEventAttendee
-}; 
+};

@@ -104,6 +104,27 @@ function EventAttendeesPage() {
     }
   };
 
+  //! Handle update event attendee
+  const handleUpdate = async (eventID, attendeeID) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}event_attendees`,
+        {
+          data: {
+            eventID: parseInt(eventID),
+            attendeeID: parseInt(attendeeID)
+          }
+        }
+      );
+      showToast('Successfully updated event attendee', 'success');
+      fetchEventAttendees();
+    } catch (err) {
+      showToast('Failed to update event attendee');
+      console.error('Error updating event attendee:', err);
+    }
+  };
+
+
   // Unregister attendee from event
   const handleDelete = async (eventID, attendeeID) => {
     try {
@@ -188,6 +209,7 @@ function EventAttendeesPage() {
         <table>
           <thead>
             <tr>
+              <th>Composite ID</th>
               <th>Event</th>
               <th>Attendee</th>
               <th>Email</th>
@@ -197,6 +219,7 @@ function EventAttendeesPage() {
           <tbody>
             {eventAttendees.map((ea) => (
               <tr key={`${ea.eventID}-${ea.attendeeID}`}>
+                <td>{`${ea.eventID}-${ea.attendeeID}`}</td> {/* Code to display composite key */}
                 <td>{ea.eventName}</td>
                 <td>{ea.attendeeName}</td>
                 <td>{ea.attendeeEmail}</td>

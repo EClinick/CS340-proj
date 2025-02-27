@@ -40,14 +40,15 @@ CREATE OR REPLACE TABLE Attendees (
 -- Create table for Speakers
 CREATE OR REPLACE TABLE Speakers (
     speakerID INT AUTO_INCREMENT PRIMARY KEY,
-    eventID INT NOT NULL,
+    eventID INT,
     fName VARCHAR(50) NOT NULL,
     lName VARCHAR(50) NOT NULL,
     specialization VARCHAR(100),
-    FOREIGN KEY (eventID) REFERENCES Events(eventID) ON DELETE CASCADE
+    FOREIGN KEY (eventID) REFERENCES Events(eventID) ON DELETE SET NULL 
+    -- ^This FK is set to NULL because a speaker may not be associated with an event, or they were removed from an event.
 );
 
---OLD VERSION WITH "HARD CODING FKs"
+-- OLD VERSION WITH "HARD CODING FKs"
 
 -- -- Create table for EventAttendees (junction table)
 -- CREATE OR REPLACE TABLE EventAttendees (
@@ -117,4 +118,3 @@ INSERT INTO EventAttendees (eventID, attendeeID) VALUES
 (3, 4);
 
 SET FOREIGN_KEY_CHECKS=1;
-COMMIT;

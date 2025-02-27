@@ -109,6 +109,7 @@ const VenuesPage = () => {
         <table>
           <thead>
             <tr>
+              <th>ID</th> {/* Add ID column */}
               <th>Venue Name</th>
               <th>Location</th>
               <th>Capacity</th>
@@ -118,11 +119,12 @@ const VenuesPage = () => {
           <tbody>
             {venues.map((venue) => (
               <tr key={venue.venueID}>
+                <td>{venue.venueID}</td> {/* Add ID cell */}
                 <td>{venue.venueName}</td>
                 <td>{venue.location}</td>
                 <td>{venue.capacity}</td>
                 <td>
-                  <button className="edit-button">Edit</button>
+                  <button className="edit-button" onClick={() => handleEdit(venue.venueID)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(venue.venueID)}>Delete</button>
                 </td>
               </tr>
@@ -135,3 +137,4 @@ const VenuesPage = () => {
 };
 
 export default VenuesPage;
+

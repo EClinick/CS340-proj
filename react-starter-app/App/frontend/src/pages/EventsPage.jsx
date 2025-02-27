@@ -58,15 +58,15 @@ function EventsPage() {
   };
 
   // Update event
-  // const handleUpdate = async (eventID) => {
-  //   try {
-  //     await axios.put(`${import.meta.env.VITE_API_URL}events/${eventID}`, newEvent);
-  //     fetchEvents();
-  //   } catch (err) {
-  //     setError('Failed to update event');
-  //     console.error('Error updating event:', err);
-  //   }
-  // }
+  const handleUpdate = async (eventID) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}events/${eventID}`, newEvent);
+      fetchEvents();
+    } catch (err) {
+      setError('Failed to update event');
+      console.error('Error updating event:', err);
+    }
+  }
 
   // Delete event
   const handleDelete = async (eventID) => {
@@ -147,6 +147,7 @@ function EventsPage() {
         <table>
           <thead>
             <tr>
+              <th>ID</th> {/* Add ID column */}
               <th>Event Name</th>
               <th>Date</th>
               <th>Venue</th>
@@ -157,12 +158,13 @@ function EventsPage() {
           <tbody>
             {events.map((event) => (
               <tr key={event.eventID}>
+                <td>{event.eventID}</td> {/* Add ID cell */}
                 <td>{event.eventName}</td>
                 <td>{new Date(event.eventDate).toLocaleDateString()}</td>
                 <td>{event.venueName}</td>
                 <td>{event.eventDescription}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
+                  <button className='edit-button' onClick={() => handleUpdate(event.eventID)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(event.eventID)}>Delete</button>
                 </td>
               </tr>

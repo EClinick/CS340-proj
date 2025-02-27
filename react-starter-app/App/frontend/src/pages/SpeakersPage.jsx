@@ -57,15 +57,15 @@ function SpeakersPage() {
   };
 
   // Edit speaker
-  // const handleEdit = async (speakerID) => {
-  //   try {
-  //     await axios.put(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`, newSpeaker);
-  //     fetchSpeakers();
-  //   } catch (err) {
-  //     setError('Failed to update speaker');
-  //     console.error('Error updating speaker:', err);
-  //   }
-  // };
+  const handleEdit = async (speakerID) => {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`, newSpeaker);
+      fetchSpeakers();
+    } catch (err) {
+      setError('Failed to update speaker');
+      console.error('Error updating speaker:', err);
+    }
+  };
 
   // Delete speaker
   const handleDelete = async (speakerID) => {
@@ -146,6 +146,7 @@ function SpeakersPage() {
         <table>
           <thead>
             <tr>
+              <th>ID</th> {/* Add ID column */}
               <th>Name</th>
               <th>Specialization</th>
               <th>Event</th>
@@ -155,11 +156,12 @@ function SpeakersPage() {
           <tbody>
             {speakers.map((speaker) => (
               <tr key={speaker.speakerID}>
+                <td>{speaker.speakerID}</td> {/* Add ID cell */}
                 <td>{`${speaker.fName} ${speaker.lName}`}</td>
                 <td>{speaker.specialization}</td>
                 <td>{speaker.eventName}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
+                  <button className='edit-button' onClick={() => handleEdit(speaker.speakerID)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(speaker.speakerID)}>Delete</button>
                 </td>
               </tr>

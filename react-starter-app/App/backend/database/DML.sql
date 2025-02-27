@@ -9,9 +9,7 @@
 -----------------
 
 /*
-
-Replaced :eventName, :eventDate, :venueID, and :eventDescription with :eventNameInput, :eventDateInput, :venueIDInput, and :eventDescriptionInput.
-Updated the WHERE clause to use :eventIDInput.
+Added the query used to fill the Venues dropdown on the Events page.
 */
 
 -- INSERT: Create a new event
@@ -31,6 +29,11 @@ JOIN Venues v ON e.venueID = v.venueID
 WHERE e.eventName = :eventNameInput
 ORDER BY e.eventDate DESC;
 
+-- SELECT: Retrieve the venue names to populate the dropdown.
+SELECT v.venueName
+FROM Venues v
+ORDER BY v.venueName;
+
 -- UPDATE: Update an existing event
 UPDATE Events
 SET eventName = :eventNameInput,
@@ -49,8 +52,7 @@ WHERE eventID = :eventIDInput;
 -------------------
 
 /*
-Replaced :fName and :lName with :firstNameInput and :lastNameInput.
-Updated :email to :emailInput and the WHERE clause to use :attendeeIDInput.
+Added the query used to fill the register for event dropdown on the Attendees page.
 */
 
 
@@ -69,6 +71,11 @@ FROM Attendees a
 WHERE attendeeID = :attendeeIDInput
 ORDER BY a.lName;
 
+-- SELECT: Retrieve the event names to populate the dropdown.
+SELECT e.eventName
+FROM Events e
+ORDER BY e.eventDate DESC;
+
 -- UPDATE: Update attendee details
 UPDATE Attendees
 SET fName = :firstNameInput,
@@ -86,8 +93,7 @@ WHERE attendeeID = :attendeeIDInput;
 ------------------
 
 /*
-Updated to use :eventIDInput, :firstNameInput, :lastNameInput, and :specializationInput.
-The WHERE clause uses :speakerIDInput.
+Added the query used to fill the events dropdown on the Speakers page.
 */
 
 -- INSERT: Create a new speaker
@@ -105,6 +111,11 @@ FROM Speakers s
 WHERE speakerID = :speakerIDInput
 ORDER BY s.lName;
 
+-- SELECT: Retrieve the event names to populate the dropdown.
+SELECT e.eventName
+FROM Events e
+ORDER BY e.eventDate DESC;
+
 -- UPDATE: Update an existing speaker
 UPDATE Speakers
 SET fName = :firstNameInput,
@@ -120,11 +131,6 @@ WHERE speakerID = :speakerIDInput;
 ----------------
 -- Venues Table
 ----------------
-
-/*
-Replaced :venueName, :location, and :capacity with :venueNameInput, :locationInput, and :capacityInput.
-Updated the WHERE clause to use :venueIDInput.
-*/
 
 -- INSERT: Create a new venue
 INSERT INTO Venues (venueName, location, capacity)
@@ -158,7 +164,8 @@ WHERE venueID = :venueIDInput;
 ------------------------
 
 /*
-Updated the INSERT and WHERE clause to use :eventIDInput and :attendeeIDInput.
+Created an UPDATE statement to update an EventAttendee relationship. Uses :eventIDInput and :attendeeIDInput.
+Added the query used to fill the event and attendee dropdowns on the EventAttendees page.
 */
 
 -- INSERT: Create a new EventAttendees relationship
@@ -182,6 +189,25 @@ WHERE
     AND
     ea.attendeeID = :attendeeIDInput
 ORDER BY a.lName;
+
+-- SELECT: Retrieve the event names to populate the dropdown.
+SELECT e.eventName
+FROM Events e
+ORDER BY e.eventDate DESC;
+
+-- SELECT: Retrieve the attendee names to populate the dropdown.
+SELECT (a.fName, a.lName) as attendeeName
+FROM Attendees a
+ORDER BY a.lName;
+
+-- UPDATE: Update an EventAttendee relationship
+UPDATE EventAttendees
+SET eventID = :eventIDInput,
+    attendeeID = :attendeeIDInput
+WHERE 
+    eventID = :eventIDInput
+    AND
+    attendeeID = :attendeeIDInput;
 
 -- DELETE: Delete an EventAttendee relationship
 DELETE FROM EventAttendees

@@ -2,6 +2,51 @@
 
 Below is a comprehensive list of fixes we need to implement along with the original suggestions based on the feedback received throughout the project.
 
+## Step 3 Final Version Suggestions
+## Suggestor: **Grader**
+
+## 1. Add a NULLable relationship (DONE)
+- **Suggestion:**
+  You need to have a NULLable relationship, per the project requirements. This means you must have an ON DELETE SET NULL and the ability for the user to update the FK to NULL in the UI. A possible place you could implement this could be eventID in Speakers. If a speaker has not yet been booked for an event or if they have been removed from the event or if the event has been removed, the eventID could be NULL.
+- **Fix:**
+  Update the eventID FK in Speakers to be nullable in the outline, overview, schema, ERD, and DDL file.
+
+## 2. Elaborate on suggestions not taken (DONE)
+- **Suggestion:**
+  Suggestions not taken do not have sufficient justifications. Please describe why you did not take each suggestion
+- **Fix:**
+  Update the actions taken section to explain why some suggestions were not taken.
+
+## 3. Separate not taken section (DONE)
+- **Suggestion:**
+  It would also be nice to have suggestions not taken as a separate section for each step as well
+- **Fix:**
+  Make a new section for any suggestions not taken.
+
+## 4. HTML Pages Fixes (DONE)
+- **Suggestion:**
+  - Please include a column for ID values in the tables
+  - There should be an ability to directly UPDATE the intersection table per the project requirements
+  - It might be nice to have the data tables first, followed by the add form
+- **Fix:**
+  - Update the table for each page to include the corresponding ID values.
+  - Add an UPDATE to the intersection table page and DML.
+  - We will not put the data tables above the add form in fear of burying the add form on the page after the tables grow.
+
+## 5. Data Definition Queries (DONE)
+- **Suggestion:**
+  If you have removed EventAttendees' auto incrementing PK, please update this in the outline and schema. It's important to make sure everything is consistent across all documents and files
+- **Fix:**
+  Update the outline, schema and ERD to reflect the removal of EventAttendees' AI PK.
+
+## 6. Data Manipulation Queries (DONE)
+- **Suggestion:**
+  Missing queries for populating dropdowns
+- **Fix:**
+  Update the DML to include the queries for the dropdowns.
+
+
+## Step 3 Draft Version Suggestions
 ## Suggestor: **Jeffrey Benner**
 
 ## 1. EventAttendees Table – Composite Primary Key (DONE)
