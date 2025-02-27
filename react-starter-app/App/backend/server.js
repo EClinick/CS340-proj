@@ -4,7 +4,7 @@ require("dotenv").config();
 const db = require('./database/db-connector');
 
 const app = express();
-const PORT = process.env.PORT || 8500;
+const PORT = process.env.PORT || 8500; 
 
 // Middleware:
 

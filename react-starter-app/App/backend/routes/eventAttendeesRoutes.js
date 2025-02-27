@@ -14,7 +14,7 @@ router.get('/', getEventAttendees);
 router.post('/', createEventAttendee);
 
 // Update event-attendee relationship
-router.put('/:eventID/:attendeeID', updateEventAttendee);
+router.put('/', updateEventAttendee);
 
 // Delete event-attendee relationship
 router.delete('/', deleteEventAttendee);

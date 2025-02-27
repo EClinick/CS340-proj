@@ -3,7 +3,10 @@ const db = require('../database/db-connector');
 // Get all attendees
 const getAttendees = async (req, res) => {
     try {
-        const [attendees] = await db.query('SELECT a.fName, a.lName, email FROM Attendees ORDER BY a.lName');
+        const [attendees] = await db.query(`
+            SELECT attendeeID, a.fName, a.lName, email 
+            FROM Attendees a 
+            ORDER BY a.lName`);
         res.json(attendees);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,8 +17,8 @@ const getAttendees = async (req, res) => {
 const getAttendee = async (req, res) => {
     try {
         const [attendee] = await db.query(`
-            SELECT a.fName, a.lName, email 
-            FROM Attendees 
+            SELECT attendeeID a.fName, a.lName, email 
+            FROM Attendees a
             WHERE attendeeID = ?
             ORDER BY a.lName`
             , [req.params.attendeeID]);

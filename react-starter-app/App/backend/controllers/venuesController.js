@@ -3,7 +3,7 @@ const db = require('../database/db-connector');
 // Get all venues
 const getVenues = async (req, res) => {
     try {
-        const [venues] = await db.query('SELECT venueName, location, capacity FROM Venues ORDER BY venueName');
+        const [venues] = await db.query('SELECT venueID, venueName, location, capacity FROM Venues ORDER BY venueName');
         res.json(venues);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,7 +14,7 @@ const getVenues = async (req, res) => {
 const getVenue = async (req, res) => {
     try {
         const [venue] = await db.query(`
-            SELECT venueName, location, capacity
+            SELECT venueID, venueName, location, capacity
             FROM Venues 
             WHERE venueID = ?
             ORDER BY venueName

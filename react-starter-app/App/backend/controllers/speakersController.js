@@ -4,7 +4,7 @@ const db = require('../database/db-connector');
 const getSpeakers = async (req, res) => {
     try {
         const [speakers] = await db.query(`
-            SELECT s.fName, s.lName, specialization, e.eventName 
+            SELECT speakerID, s.fName, s.lName, specialization, e.eventName 
             FROM Speakers s
             JOIN Events e ON s.eventID = e.eventID
             ORDER BY s.lName
@@ -19,7 +19,7 @@ const getSpeakers = async (req, res) => {
 const getSpeaker = async (req, res) => {
     try {
         const [speaker] = await db.query(`
-            SELECT s.fName, s.lName, specialization, e.eventName, e.eventDate 
+            SELECT s.speakerID, s.fName, s.lName, specialization, e.eventName, e.eventDate 
             FROM Speakers s
             JOIN Events e ON s.eventID = e.eventID
             WHERE s.speakerID = ?

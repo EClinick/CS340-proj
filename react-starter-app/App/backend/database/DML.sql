@@ -17,17 +17,17 @@ INSERT INTO Events (eventName, eventDate, venueID, eventDescription)
 VALUES (:eventNameInput, :eventDateInput, :venueIDInput, :eventDescriptionInput);
 
 -- SELECT: Retrieve all events with their corresponding venue names
-SELECT e.eventName, e.eventDate, v.venueName, e.eventDescription
+SELECT e.eventID, e.eventName, e.eventDate, v.venueName, e.eventDescription
 FROM Events e
 JOIN Venues v ON e.venueID = v.venueID
-ORDER BY e.eventDate DESC;
+ORDER BY e.eventDate ASC;
 
 -- SELECT: Retrieve a single event with their corresponding venue name
-SELECT eventID, e.eventName, e.eventDate, v.venueName, e.eventDescription
+SELECT e.eventID, e.eventName, e.eventDate, v.venueName, e.eventDescription
 FROM Events e
 JOIN Venues v ON e.venueID = v.venueID
 WHERE e.eventName = :eventNameInput
-ORDER BY e.eventDate DESC;
+ORDER BY e.eventDate ASC;
 
 -- SELECT: Retrieve the venue names to populate the dropdown.
 SELECT v.venueName
@@ -61,12 +61,12 @@ INSERT INTO Attendees (fName, lName, email)
 VALUES (:firstNameInput, :lastNameInput, :emailInput);
 
 -- SELECT: Retrieve all attendees
-SELECT a.fName, a.lName, email 
+SELECT attendeeID, a.fName, a.lName, email 
 FROM Attendees a
 ORDER BY a.lName;
 
 -- SELECT: Retrieve single attendee
-SELECT a.fName, a.lName, email
+SELECT attendeeID, a.fName, a.lName, email
 FROM Attendees a
 WHERE attendeeID = :attendeeIDInput
 ORDER BY a.lName;
@@ -74,7 +74,7 @@ ORDER BY a.lName;
 -- SELECT: Retrieve the event names to populate the dropdown.
 SELECT e.eventName
 FROM Events e
-ORDER BY e.eventDate DESC;
+ORDER BY e.eventDate ASC;
 
 -- UPDATE: Update attendee details
 UPDATE Attendees
@@ -101,12 +101,12 @@ INSERT INTO Speakers (eventID, fName, lName, specialization)
 VALUES (:eventIDInput, :firstNameInput, :lastNameInput, :specializationInput);
 
 -- SELECT: Retrieve all speakers
-SELECT s.fName, s.lName, specialization
+SELECT speakerID, s.fName, s.lName, specialization
 FROM Speakers s
 ORDER BY s.lName;
 
 -- SELECT: Retrieve single speaker
-SELECT s.fName, s.lName, specialization
+SELECT speakerID, s.fName, s.lName, specialization
 FROM Speakers s
 WHERE speakerID = :speakerIDInput
 ORDER BY s.lName;
@@ -114,7 +114,7 @@ ORDER BY s.lName;
 -- SELECT: Retrieve the event names to populate the dropdown.
 SELECT e.eventName
 FROM Events e
-ORDER BY e.eventDate DESC;
+ORDER BY e.eventDate ASC;
 
 -- UPDATE: Update an existing speaker
 UPDATE Speakers
@@ -137,12 +137,12 @@ INSERT INTO Venues (venueName, location, capacity)
 VALUES (:venueNameInput, :locationInput, :capacityInput);
 
 -- SELECT: Retrieve all venues
-SELECT venueName, location, capacity 
+SELECT venueID, venueName, location, capacity 
 FROM Venues
 ORDER BY venueName;
 
 -- SELECT: Retrieve single venue
-SELECT venueName, location, capacity
+SELECT venueID, venueName, location, capacity
 FROM Venues
 WHERE venueID = :venueIDInput
 ORDER BY venueName;
@@ -193,7 +193,7 @@ ORDER BY a.lName;
 -- SELECT: Retrieve the event names to populate the dropdown.
 SELECT e.eventName
 FROM Events e
-ORDER BY e.eventDate DESC;
+ORDER BY e.eventDate ASC;
 
 -- SELECT: Retrieve the attendee names to populate the dropdown.
 SELECT (a.fName, a.lName) as attendeeName

@@ -4,10 +4,10 @@ const db = require('../database/db-connector');
 const getEvents = async (req, res) => {
     try {
         const [events] = await db.query(`
-            SELECT e.eventName, e.eventDate, e.eventDescription, v.venueName, v.location, v.capacity 
+            SELECT e.eventID, e.eventName, e.eventDate, e.eventDescription, v.venueName, v.location, v.capacity 
             FROM Events e 
             JOIN Venues v ON e.venueID = v.venueID
-            ORDER BY e.eventDate DESC
+            ORDER BY e.eventDate ASC
         `);
         res.json(events);
     } catch (error) {
@@ -19,11 +19,11 @@ const getEvents = async (req, res) => {
 const getEvent = async (req, res) => {
     try {
         const [event] = await db.query(`
-            SELECT e.eventName, e.eventDate, e.eventDescription, v.venueName, v.location, v.capacity 
+            SELECT e.eventID, e.eventName, e.eventDate, e.eventDescription, v.venueName, v.location, v.capacity 
             FROM Events e 
             JOIN Venues v ON e.venueID = v.venueID 
             WHERE e.eventID = ?
-            ORDER BY e.eventDate DESC
+            ORDER BY e.eventDate ASC
         `, [req.params.id]);
         
         if (event.length === 0) {
