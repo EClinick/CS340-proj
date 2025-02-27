@@ -164,7 +164,7 @@ function EventsPage() {
                 <td>{event.venueName}</td>
                 <td>{event.eventDescription}</td>
                 <td>
-                  <button className='edit-button' onClick={() => handleUpdate(event.eventID)}>Edit</button>
+                  <button className='edit-button'>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(event.eventID)}>Delete</button>
                 </td>
               </tr>

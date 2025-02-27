@@ -161,7 +161,7 @@ function SpeakersPage() {
                 <td>{speaker.specialization}</td>
                 <td>{speaker.eventName}</td>
                 <td>
-                  <button className='edit-button' onClick={() => handleEdit(speaker.speakerID)}>Edit</button>
+                  <button className='edit-button'>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(speaker.speakerID)}>Delete</button>
                 </td>
               </tr>

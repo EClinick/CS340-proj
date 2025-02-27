@@ -154,7 +154,7 @@ function AttendeesPage() {
                 <td>{`${attendee.fName} ${attendee.lName}`}</td>
                 <td>{attendee.email}</td>
                 <td>
-                  <button className="edit-button action-button" onClick={() => handleUpdate(attendee.attendeeID)}>Edit</button>
+                  <button className="edit-button action-button">Edit</button>
                   <button className="delete-button action-button" onClick={() => handleDelete(attendee.attendeeID)}>Delete</button>
                   <select
                     className="register-select"

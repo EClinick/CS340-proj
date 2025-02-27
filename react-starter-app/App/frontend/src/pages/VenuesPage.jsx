@@ -124,7 +124,7 @@ const VenuesPage = () => {
                 <td>{venue.location}</td>
                 <td>{venue.capacity}</td>
                 <td>
-                  <button className="edit-button" onClick={() => handleEdit(venue.venueID)}>Edit</button>
+                  <button className="edit-button">Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(venue.venueID)}>Delete</button>
                 </td>
               </tr>

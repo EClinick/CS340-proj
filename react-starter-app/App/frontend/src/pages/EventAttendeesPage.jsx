@@ -224,6 +224,7 @@ function EventAttendeesPage() {
                 <td>{ea.attendeeName}</td>
                 <td>{ea.attendeeEmail}</td>
                 <td>
+                  <button className="edit-button">Edit</button>
                   <button 
                     className="delete-button"
                     onClick={() => handleDelete(ea.eventID, ea.attendeeID)}
