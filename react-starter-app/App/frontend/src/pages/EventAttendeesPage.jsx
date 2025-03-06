@@ -13,6 +13,8 @@ function EventAttendeesPage() {
   });
   const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
   const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const [originalEventAttendee, setOriginalEventAttendee] = useState(null);
 
   // Fetch event attendees with event and attendee details
   const fetchEventAttendees = async () => {
@@ -64,24 +66,74 @@ function EventAttendeesPage() {
     }
   };
 
-  // Register attendee for event
+  // Set up form for editing
+  const setupEdit = (eventAttendee) => {
+    setNewEventAttendee({
+      eventID: eventAttendee.eventID.toString(),
+      attendeeID: eventAttendee.attendeeID.toString()
+    });
+    setOriginalEventAttendee({
+      eventID: eventAttendee.eventID,
+      attendeeID: eventAttendee.attendeeID
+    });
+    setEditMode(true);
+  };
+
+  // Reset form and exit edit mode
+  const resetForm = () => {
+    setNewEventAttendee({
+      eventID: '',
+      attendeeID: ''
+    });
+    setEditMode(false);
+    setOriginalEventAttendee(null);
+  };
+
+  // Register attendee for event or update registration
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}event_attendees`,
-        {
-          eventID: parseInt(newEventAttendee.eventID),
-          attendeeID: parseInt(newEventAttendee.attendeeID)
-        }
-      );
+      const eventAttendeeData = {
+        eventID: parseInt(newEventAttendee.eventID),
+        attendeeID: parseInt(newEventAttendee.attendeeID)
+      };
       
-      // Clear form and show success message
-      setNewEventAttendee({ eventID: '', attendeeID: '' });
-      showToast('Successfully registered attendee for event', 'success');
+      if (editMode) {
+        // For edit, we need to delete the old record and create a new one
+        // First, delete the original event-attendee relationship
+        await axios.delete(
+          `${import.meta.env.VITE_API_URL}event_attendees`,
+          { 
+            data: { 
+              eventID: originalEventAttendee.eventID, 
+              attendeeID: originalEventAttendee.attendeeID 
+            } 
+          }
+        );
+        
+        // Then create the new relationship
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}event_attendees`,
+          eventAttendeeData
+        );
+        
+        showToast('Successfully updated registration', 'success');
+        resetForm();
+      } else {
+        // Create new registration
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}event_attendees`,
+          eventAttendeeData
+        );
+        
+        showToast('Successfully registered attendee for event', 'success');
+        resetForm();
+      }
+      
       fetchEventAttendees();
     } catch (err) {
-      console.error('Error registering attendee:', err);
+      console.error('Error with event attendee operation:', err);
       
       // Handle specific error cases
       if (err.response) {
@@ -96,34 +148,13 @@ function EventAttendeesPage() {
             showToast('This attendee is already registered for this event.');
             break;
           default:
-            showToast(err.response.data.message || 'Failed to register attendee for event');
+            showToast(err.response.data.message || 'Failed to complete operation');
         }
       } else {
-        showToast('Failed to register attendee for event. Please try again.');
+        showToast('Failed to complete operation. Please try again.');
       }
     }
   };
-
-  //! Handle update event attendee
-  const handleUpdate = async (eventID, attendeeID) => {
-    try {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}event_attendees`,
-        {
-          data: {
-            eventID: parseInt(eventID),
-            attendeeID: parseInt(attendeeID)
-          }
-        }
-      );
-      showToast('Successfully updated event attendee', 'success');
-      fetchEventAttendees();
-    } catch (err) {
-      showToast('Failed to update event attendee');
-      console.error('Error updating event attendee:', err);
-    }
-  };
-
 
   // Unregister attendee from event
   const handleDelete = async (eventID, attendeeID) => {
@@ -165,9 +196,9 @@ function EventAttendeesPage() {
       
       <h1>Event Attendees</h1>
 
-      {/* Add Event Attendee Form */}
+      {/* Add/Edit Event Attendee Form */}
       <div className="form-section">
-        <h2>Register Attendee for Event</h2>
+        <h2>{editMode ? 'Update Registration' : 'Register Attendee for Event'}</h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label>Event:</label>
@@ -199,7 +230,14 @@ function EventAttendeesPage() {
               ))}
             </select>
           </div>
-          <button type="submit">Register</button>
+          <div className="form-buttons">
+            <button type="submit">{editMode ? 'Update Registration' : 'Register'}</button>
+            {editMode && (
+              <button type="button" onClick={resetForm} className="cancel-button">
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -219,12 +257,12 @@ function EventAttendeesPage() {
           <tbody>
             {eventAttendees.map((ea) => (
               <tr key={`${ea.eventID}-${ea.attendeeID}`}>
-                <td>{`${ea.eventID}-${ea.attendeeID}`}</td> {/* Code to display composite key */}
+                <td>{`${ea.eventID}-${ea.attendeeID}`}</td>
                 <td>{ea.eventName}</td>
                 <td>{ea.attendeeName}</td>
                 <td>{ea.attendeeEmail}</td>
                 <td>
-                  <button className="edit-button">Edit</button>
+                  <button className="edit-button" onClick={() => setupEdit(ea)}>Edit</button>
                   <button 
                     className="delete-button"
                     onClick={() => handleDelete(ea.eventID, ea.attendeeID)}

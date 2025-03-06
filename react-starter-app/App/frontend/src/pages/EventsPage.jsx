@@ -15,6 +15,8 @@ function EventsPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+  const [editMode, setEditMode] = useState(false);
+  const [currentEventId, setCurrentEventId] = useState(null);
 
   // Show toast message
   const showToast = (message, type = 'success') => {
@@ -51,36 +53,56 @@ function EventsPage() {
     }
   };
 
-  // Create event
+  // Create or update event
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}events`, newEvent);
-      setNewEvent({
-        eventName: '',
-        eventDate: '',
-        venueID: '',
-        eventDescription: ''
-      });
-      fetchEvents();
-      showToast('Event created successfully!', 'success');
-    } catch (err) {
-      showToast('Failed to create event', 'error');
-      console.error('Error creating event:', err);
+    
+    if (editMode) {
+      try {
+        await axios.put(`${import.meta.env.VITE_API_URL}events/${currentEventId}`, newEvent);
+        fetchEvents();
+        showToast('Event updated successfully!', 'success');
+        resetForm();
+      } catch (err) {
+        showToast('Failed to update event', 'error');
+        console.error('Error updating event:', err);
+      }
+    } else {
+      try {
+        await axios.post(`${import.meta.env.VITE_API_URL}events`, newEvent);
+        fetchEvents();
+        showToast('Event created successfully!', 'success');
+        resetForm();
+      } catch (err) {
+        showToast('Failed to create event', 'error');
+        console.error('Error creating event:', err);
+      }
     }
   };
 
-  // Update event
-  const handleUpdate = async (eventID) => {
-    try {
-      await axios.put(`${import.meta.env.VITE_API_URL}events/${eventID}`, newEvent);
-      fetchEvents();
-      showToast('Event updated successfully!', 'success');
-    } catch (err) {
-      showToast('Failed to update event', 'error');
-      console.error('Error updating event:', err);
-    }
-  }
+  // Reset form and exit edit mode
+  const resetForm = () => {
+    setNewEvent({
+      eventName: '',
+      eventDate: '',
+      venueID: '',
+      eventDescription: ''
+    });
+    setEditMode(false);
+    setCurrentEventId(null);
+  };
+
+  // Set up form for editing
+  const setupEdit = (event) => {
+    setNewEvent({
+      eventName: event.eventName,
+      eventDate: event.eventDate.split('T')[0], // Format date for the input field
+      venueID: event.venueID,
+      eventDescription: event.eventDescription || ''
+    });
+    setEditMode(true);
+    setCurrentEventId(event.eventID);
+  };
 
   // Delete event
   const handleDelete = async (eventID) => {
@@ -113,9 +135,9 @@ function EventsPage() {
      
       <h1>Events</h1>
       
-      {/* Add Event Form */}
+      {/* Add/Edit Event Form */}
       <div className="form-section">
-        <h2>Add New Event</h2>
+        <h2>{editMode ? 'Edit Event' : 'Add New Event'}</h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label>Event Name:</label>
@@ -157,7 +179,14 @@ function EventsPage() {
               onChange={(e) => setNewEvent({ ...newEvent, eventDescription: e.target.value })}
             />
           </div>
-          <button type="submit">Add Event</button>
+          <div className="form-buttons">
+            <button type="submit">{editMode ? 'Update Event' : 'Add Event'}</button>
+            {editMode && (
+              <button type="button" onClick={resetForm} className="cancel-button">
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -167,7 +196,7 @@ function EventsPage() {
         <table>
           <thead>
             <tr>
-              <th>ID</th> {/* Add ID column */}
+              <th>ID</th>
               <th>Event Name</th>
               <th>Date</th>
               <th>Venue</th>
@@ -178,13 +207,13 @@ function EventsPage() {
           <tbody>
             {events.map((event) => (
               <tr key={event.eventID}>
-                <td>{event.eventID}</td> {/* Add ID cell */}
+                <td>{event.eventID}</td>
                 <td>{event.eventName}</td>
                 <td>{new Date(event.eventDate).toLocaleDateString()}</td>
                 <td>{event.venueName}</td>
                 <td>{event.eventDescription}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
+                  <button className='edit-button' onClick={() => setupEdit(event)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(event.eventID)}>Delete</button>
                 </td>
               </tr>

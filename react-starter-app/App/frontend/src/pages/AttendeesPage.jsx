@@ -14,6 +14,8 @@ function AttendeesPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+  const [editMode, setEditMode] = useState(false);
+  const [currentAttendeeId, setCurrentAttendeeId] = useState(null);
 
   // Show toast message
   const showToast = (message, type = 'success') => {
@@ -50,35 +52,54 @@ function AttendeesPage() {
     }
   };
 
-  // Create attendee
+  // Create or update attendee
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}attendees`, newAttendee);
-      setNewAttendee({
-        fName: '',
-        lName: '',
-        email: ''
-      });
-      fetchAttendees();
-      showToast('Attendee added successfully!', 'success');
-    } catch (err) {
-      showToast('Failed to create attendee', 'error');
-      console.error('Error creating attendee:', err);
+    
+    if (editMode) {
+      try {
+        await axios.put(`${import.meta.env.VITE_API_URL}attendees/${currentAttendeeId}`, newAttendee);
+        fetchAttendees();
+        showToast('Attendee updated successfully!', 'success');
+        resetForm();
+      } catch (err) {
+        showToast('Failed to update attendee', 'error');
+        console.error('Error updating attendee:', err);
+      }
+    } else {
+      try {
+        await axios.post(`${import.meta.env.VITE_API_URL}attendees`, newAttendee);
+        fetchAttendees();
+        showToast('Attendee added successfully!', 'success');
+        resetForm();
+      } catch (err) {
+        showToast('Failed to create attendee', 'error');
+        console.error('Error creating attendee:', err);
+      }
     }
   };
 
-  // Update attendee
-  const handleUpdate = async (attendeeID) => {
-    try {
-      await axios.put(`${import.meta.env.VITE_API_URL}attendees/${attendeeID}`, newAttendee);
-      fetchAttendees();
-      showToast('Attendee updated successfully!', 'success');
-    } catch (err) {
-      showToast('Failed to update attendee', 'error');
-      console.error('Error updating attendee:', err);
-    }
-  }
+  // Reset form and exit edit mode
+  const resetForm = () => {
+    setNewAttendee({
+      fName: '',
+      lName: '',
+      email: ''
+    });
+    setEditMode(false);
+    setCurrentAttendeeId(null);
+  };
+
+  // Set up form for editing
+  const setupEdit = (attendee) => {
+    setNewAttendee({
+      fName: attendee.fName,
+      lName: attendee.lName,
+      email: attendee.email
+    });
+    setEditMode(true);
+    setCurrentAttendeeId(attendee.attendeeID);
+  };
 
   // Delete attendee
   const handleDelete = async (attendeeID) => {
@@ -124,9 +145,9 @@ function AttendeesPage() {
 
       <h1>Attendees</h1>
       
-      {/* Add Attendee Form */}
+      {/* Add/Edit Attendee Form */}
       <div className="form-section">
-        <h2>Add New Attendee</h2>
+        <h2>{editMode ? 'Edit Attendee' : 'Add New Attendee'}</h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label>First Name:</label>
@@ -155,7 +176,14 @@ function AttendeesPage() {
               required
             />
           </div>
-          <button type="submit">Add Attendee</button>
+          <div className="form-buttons">
+            <button type="submit">{editMode ? 'Update Attendee' : 'Add Attendee'}</button>
+            {editMode && (
+              <button type="button" onClick={resetForm} className="cancel-button">
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -166,7 +194,7 @@ function AttendeesPage() {
         <table>
           <thead>
             <tr>
-              <th>ID</th> {/* Add ID column */}
+              <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Actions</th>
@@ -175,11 +203,11 @@ function AttendeesPage() {
           <tbody>
             {attendees.map((attendee) => (
               <tr key={attendee.attendeeID}>
-                <td>{attendee.attendeeID}</td> {/* Add ID cell */}
+                <td>{attendee.attendeeID}</td>
                 <td>{`${attendee.fName} ${attendee.lName}`}</td>
                 <td>{attendee.email}</td>
                 <td>
-                  <button className="edit-button action-button">Edit</button>
+                  <button className="edit-button action-button" onClick={() => setupEdit(attendee)}>Edit</button>
                   <button className="delete-button action-button" onClick={() => handleDelete(attendee.attendeeID)}>Delete</button>
                   <select
                     className="register-select"

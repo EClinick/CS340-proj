@@ -15,6 +15,8 @@ function SpeakersPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+  const [editMode, setEditMode] = useState(false);
+  const [currentSpeakerId, setCurrentSpeakerId] = useState(null);
 
   // Show toast message
   const showToast = (message, type = 'success') => {
@@ -51,47 +53,61 @@ function SpeakersPage() {
     }
   };
 
-  // Create speaker
+  // Create or update speaker
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // If 'No Event' is selected, set eventID to null
-      const speakerData = { ...newSpeaker };
-      if (speakerData.eventID === 'null') {
-        speakerData.eventID = null;
+    
+    // If 'No Event' is selected, set eventID to null
+    const speakerData = { ...newSpeaker };
+    if (speakerData.eventID === 'null') {
+      speakerData.eventID = null;
+    }
+    
+    if (editMode) {
+      try {
+        await axios.put(`${import.meta.env.VITE_API_URL}speakers/${currentSpeakerId}`, speakerData);
+        fetchSpeakers();
+        showToast('Speaker updated successfully!', 'success');
+        resetForm();
+      } catch (err) {
+        showToast('Failed to update speaker', 'error');
+        console.error('Error updating speaker:', err);
       }
-      
-      await axios.post(`${import.meta.env.VITE_API_URL}speakers`, speakerData);
-      setNewSpeaker({
-        eventID: '',
-        fName: '',
-        lName: '',
-        specialization: ''
-      });
-      fetchSpeakers();
-      showToast('Speaker added successfully!', 'success');
-    } catch (err) {
-      showToast('Failed to create speaker', 'error');
-      console.error('Error creating speaker:', err);
+    } else {
+      try {
+        await axios.post(`${import.meta.env.VITE_API_URL}speakers`, speakerData);
+        fetchSpeakers();
+        showToast('Speaker added successfully!', 'success');
+        resetForm();
+      } catch (err) {
+        showToast('Failed to create speaker', 'error');
+        console.error('Error creating speaker:', err);
+      }
     }
   };
 
-  // Edit speaker
-  const handleEdit = async (speakerID) => {
-    try {
-      // If 'No Event' is selected, set eventID to null
-      const speakerData = { ...newSpeaker };
-      if (speakerData.eventID === 'null') {
-        speakerData.eventID = null;
-      }
-      
-      await axios.put(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`, speakerData);
-      fetchSpeakers();
-      showToast('Speaker updated successfully!', 'success');
-    } catch (err) {
-      showToast('Failed to update speaker', 'error');
-      console.error('Error updating speaker:', err);
-    }
+  // Reset form and exit edit mode
+  const resetForm = () => {
+    setNewSpeaker({
+      eventID: '',
+      fName: '',
+      lName: '',
+      specialization: ''
+    });
+    setEditMode(false);
+    setCurrentSpeakerId(null);
+  };
+
+  // Set up form for editing
+  const setupEdit = (speaker) => {
+    setNewSpeaker({
+      eventID: speaker.eventID || 'null',
+      fName: speaker.fName,
+      lName: speaker.lName,
+      specialization: speaker.specialization
+    });
+    setEditMode(true);
+    setCurrentSpeakerId(speaker.speakerID);
   };
 
   // Delete speaker
@@ -126,9 +142,9 @@ function SpeakersPage() {
       
       <h1>Speakers</h1>
       
-      {/* Add Speaker Form */}
+      {/* Add/Edit Speaker Form */}
       <div className="form-section">
-        <h2>Add New Speaker</h2>
+        <h2>{editMode ? 'Edit Speaker' : 'Add New Speaker'}</h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label>First Name:</label>
@@ -173,7 +189,14 @@ function SpeakersPage() {
               ))}
             </select>
           </div>
-          <button type="submit">Add Speaker</button>
+          <div className="form-buttons">
+            <button type="submit">{editMode ? 'Update Speaker' : 'Add Speaker'}</button>
+            {editMode && (
+              <button type="button" onClick={resetForm} className="cancel-button">
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -183,7 +206,7 @@ function SpeakersPage() {
         <table>
           <thead>
             <tr>
-              <th>ID</th> {/* Add ID column */}
+              <th>ID</th>
               <th>Name</th>
               <th>Specialization</th>
               <th>Event</th>
@@ -193,12 +216,12 @@ function SpeakersPage() {
           <tbody>
             {speakers.map((speaker) => (
               <tr key={speaker.speakerID}>
-                <td>{speaker.speakerID}</td> {/* Add ID cell */}
+                <td>{speaker.speakerID}</td>
                 <td>{`${speaker.fName} ${speaker.lName}`}</td>
                 <td>{speaker.specialization}</td>
                 <td>{speaker.eventName}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
+                  <button className='edit-button' onClick={() => setupEdit(speaker)}>Edit</button>
                   <button className="delete-button" onClick={() => handleDelete(speaker.speakerID)}>Delete</button>
                 </td>
               </tr>
