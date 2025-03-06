@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import Toast from '../components/Toast';
 
 function SpeakersPage() {
   const [speakers, setSpeakers] = useState([]);
@@ -13,6 +14,17 @@ function SpeakersPage() {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+  // Show toast message
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+  };
+
+  // Hide toast message
+  const hideToast = () => {
+    setToast({ show: false, message: '', type: 'success' });
+  };
 
   // Fetch speakers
   const fetchSpeakers = async () => {
@@ -21,7 +33,7 @@ function SpeakersPage() {
       setSpeakers(response.data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch speakers');
+      showToast('Failed to fetch speakers', 'error');
       console.error('Error fetching speakers:', err);
     } finally {
       setLoading(false);
@@ -34,6 +46,7 @@ function SpeakersPage() {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}events`);
       setEvents(response.data);
     } catch (err) {
+      showToast('Failed to fetch events', 'error');
       console.error('Error fetching events:', err);
     }
   };
@@ -42,7 +55,13 @@ function SpeakersPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}speakers`, newSpeaker);
+      // If 'No Event' is selected, set eventID to null
+      const speakerData = { ...newSpeaker };
+      if (speakerData.eventID === 'null') {
+        speakerData.eventID = null;
+      }
+      
+      await axios.post(`${import.meta.env.VITE_API_URL}speakers`, speakerData);
       setNewSpeaker({
         eventID: '',
         fName: '',
@@ -50,8 +69,9 @@ function SpeakersPage() {
         specialization: ''
       });
       fetchSpeakers();
+      showToast('Speaker added successfully!', 'success');
     } catch (err) {
-      setError('Failed to create speaker');
+      showToast('Failed to create speaker', 'error');
       console.error('Error creating speaker:', err);
     }
   };
@@ -59,10 +79,17 @@ function SpeakersPage() {
   // Edit speaker
   const handleEdit = async (speakerID) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`, newSpeaker);
+      // If 'No Event' is selected, set eventID to null
+      const speakerData = { ...newSpeaker };
+      if (speakerData.eventID === 'null') {
+        speakerData.eventID = null;
+      }
+      
+      await axios.put(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`, speakerData);
       fetchSpeakers();
+      showToast('Speaker updated successfully!', 'success');
     } catch (err) {
-      setError('Failed to update speaker');
+      showToast('Failed to update speaker', 'error');
       console.error('Error updating speaker:', err);
     }
   };
@@ -72,8 +99,9 @@ function SpeakersPage() {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}speakers/${speakerID}`);
       fetchSpeakers();
+      showToast('Speaker deleted successfully!', 'success');
     } catch (err) {
-      setError('Failed to delete speaker');
+      showToast('Failed to delete speaker', 'error');
       console.error('Error deleting speaker:', err);
     }
   };
@@ -88,6 +116,14 @@ function SpeakersPage() {
 
   return (
     <div className="page-container">
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
+      
       <h1>Speakers</h1>
       
       {/* Add Speaker Form */}
@@ -129,6 +165,7 @@ function SpeakersPage() {
               required
             >
               <option value="">Select an event</option>
+              <option value="null">No Event (NULL)</option>
               {events.map((event) => (
                 <option key={event.eventID} value={event.eventID}>
                   {event.eventName}

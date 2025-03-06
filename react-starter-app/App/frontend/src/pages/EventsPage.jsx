@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import Toast from '../components/Toast';
 
 function EventsPage() {
   const [events, setEvents] = useState([]);
@@ -13,6 +14,17 @@ function EventsPage() {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+  // Show toast message
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+  };
+
+  // Hide toast message
+  const hideToast = () => {
+    setToast({ show: false, message: '', type: 'success' });
+  };
 
   // Fetch events
   const fetchEvents = async () => {
@@ -21,7 +33,7 @@ function EventsPage() {
       setEvents(response.data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch events');
+      showToast('Failed to fetch events', 'error');
       console.error('Error fetching events:', err);
     } finally {
       setLoading(false);
@@ -35,7 +47,7 @@ function EventsPage() {
       setVenues(response.data);
     } catch (err) {
       console.error('Error fetching venues:', err);
-      setError('Failed to fetch venues');
+      showToast('Failed to fetch venues', 'error');
     }
   };
 
@@ -51,8 +63,9 @@ function EventsPage() {
         eventDescription: ''
       });
       fetchEvents();
+      showToast('Event created successfully!', 'success');
     } catch (err) {
-      setError('Failed to create event');
+      showToast('Failed to create event', 'error');
       console.error('Error creating event:', err);
     }
   };
@@ -62,8 +75,9 @@ function EventsPage() {
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}events/${eventID}`, newEvent);
       fetchEvents();
+      showToast('Event updated successfully!', 'success');
     } catch (err) {
-      setError('Failed to update event');
+      showToast('Failed to update event', 'error');
       console.error('Error updating event:', err);
     }
   }
@@ -73,8 +87,9 @@ function EventsPage() {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}events/${eventID}`);
       fetchEvents();
+      showToast('Event deleted successfully!', 'success');
     } catch (err) {
-      setError('Failed to delete event');
+      showToast('Failed to delete event', 'error');
       console.error('Error deleting event:', err);
     }
   };
@@ -85,10 +100,16 @@ function EventsPage() {
   }, []);
 
   if (loading) return <div>Loading events...</div>;
-  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="page-container">
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
      
       <h1>Events</h1>
       
@@ -134,7 +155,6 @@ function EventsPage() {
             <textarea
               value={newEvent.eventDescription}
               onChange={(e) => setNewEvent({ ...newEvent, eventDescription: e.target.value })}
-              required
             />
           </div>
           <button type="submit">Add Event</button>

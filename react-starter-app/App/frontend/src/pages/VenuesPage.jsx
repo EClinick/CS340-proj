@@ -1,12 +1,24 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import Toast from '../components/Toast';
 
 const VenuesPage = () => {
   const [venues, setVenues] = useState([]);
   const [newVenue, setNewVenue] = useState({ venueName: '', location: '', capacity: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+  // Show toast message
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+  };
+
+  // Hide toast message
+  const hideToast = () => {
+    setToast({ show: false, message: '', type: 'success' });
+  };
 
   // Fetch venues
   const fetchVenues = async () => {
@@ -15,7 +27,7 @@ const VenuesPage = () => {
       setVenues(response.data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch venues');
+      showToast('Failed to fetch venues', 'error');
       console.error('Error fetching venues:', err);
     } finally {
       setLoading(false);
@@ -29,8 +41,9 @@ const VenuesPage = () => {
       await axios.post(`${import.meta.env.VITE_API_URL}venues`, newVenue);
       setNewVenue({ venueName: '', location: '', capacity: '' });
       fetchVenues();
+      showToast('Venue created successfully!', 'success');
     } catch (err) {
-      setError('Failed to create venue');
+      showToast('Failed to create venue', 'error');
       console.error('Error creating venue:', err);
     }
   };
@@ -40,8 +53,9 @@ const VenuesPage = () => {
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}venues/${venueID}`, newVenue);
       fetchVenues();
+      showToast('Venue updated successfully!', 'success');
     } catch (err) {
-      setError('Failed to update venue');
+      showToast('Failed to update venue', 'error');
       console.error('Error updating venue:', err);
     }
   }
@@ -51,8 +65,9 @@ const VenuesPage = () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}venues/${venueID}`);
       fetchVenues();
+      showToast('Venue deleted successfully!', 'success');
     } catch (err) {
-      setError('Failed to delete venue');
+      showToast('Failed to delete venue', 'error');
       console.error('Error deleting venue:', err);
     }
   };
@@ -66,6 +81,14 @@ const VenuesPage = () => {
 
   return (
     <div className="page-container">
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
+
       <h1>Venues</h1>
 
       {/* Add Venue Form */}

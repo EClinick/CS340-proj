@@ -41,10 +41,10 @@ function HomePage() {
   return (
     <div className="home-page">
       <h1>Event Management System</h1>
-      <div className="diagnostic-section">
+      {/* <div className="diagnostic-section">
         <h2>Database Diagnostic Information</h2>
         {content}
-      </div>
+      </div> */}
       
       <div className="project-info">
         <h2>About This Project</h2>

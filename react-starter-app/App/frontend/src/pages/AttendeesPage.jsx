@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import Toast from '../components/Toast';
 
 function AttendeesPage() {
   const [attendees, setAttendees] = useState([]);
@@ -12,6 +13,17 @@ function AttendeesPage() {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+  // Show toast message
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+  };
+
+  // Hide toast message
+  const hideToast = () => {
+    setToast({ show: false, message: '', type: 'success' });
+  };
 
   // Fetch attendees
   const fetchAttendees = async () => {
@@ -20,7 +32,7 @@ function AttendeesPage() {
       setAttendees(response.data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch attendees');
+      showToast('Failed to fetch attendees', 'error');
       console.error('Error fetching attendees:', err);
     } finally {
       setLoading(false);
@@ -33,6 +45,7 @@ function AttendeesPage() {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}events`);
       setEvents(response.data);
     } catch (err) {
+      showToast('Failed to fetch events', 'error');
       console.error('Error fetching events:', err);
     }
   };
@@ -48,8 +61,9 @@ function AttendeesPage() {
         email: ''
       });
       fetchAttendees();
+      showToast('Attendee added successfully!', 'success');
     } catch (err) {
-      setError('Failed to create attendee');
+      showToast('Failed to create attendee', 'error');
       console.error('Error creating attendee:', err);
     }
   };
@@ -59,8 +73,9 @@ function AttendeesPage() {
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}attendees/${attendeeID}`, newAttendee);
       fetchAttendees();
+      showToast('Attendee updated successfully!', 'success');
     } catch (err) {
-      setError('Failed to update attendee');
+      showToast('Failed to update attendee', 'error');
       console.error('Error updating attendee:', err);
     }
   }
@@ -70,8 +85,9 @@ function AttendeesPage() {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}attendees/${attendeeID}`);
       fetchAttendees();
+      showToast('Attendee deleted successfully!', 'success');
     } catch (err) {
-      setError('Failed to delete attendee');
+      showToast('Failed to delete attendee', 'error');
       console.error('Error deleting attendee:', err);
     }
   };
@@ -81,8 +97,9 @@ function AttendeesPage() {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}attendees/${attendeeID}/register`, { eventID });
       fetchAttendees();
+      showToast('Attendee registered successfully!', 'success');
     } catch (err) {
-      setError('Failed to register attendee for event');
+      showToast('Failed to register attendee for event', 'error');
       console.error('Error registering attendee:', err);
     }
   };
@@ -97,6 +114,14 @@ function AttendeesPage() {
 
   return (
     <div className="page-container">
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
+
       <h1>Attendees</h1>
       
       {/* Add Attendee Form */}
