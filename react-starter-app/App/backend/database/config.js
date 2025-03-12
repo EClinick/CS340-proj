@@ -1,3 +1,5 @@
+// The code in this file was given to us by our instructor, and we did not write it ourselves.
+
 // Get an instance of mysql we can use in the app
 const mysql = require("mysql2");
 require("dotenv").config();

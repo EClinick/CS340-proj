@@ -1,3 +1,5 @@
+// The code in this file was given to us by our instructor, and we did not write it ourselves.
+
 const mysql = require('mysql2');
 require('dotenv').config();
 

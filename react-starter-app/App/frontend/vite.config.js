@@ -1,3 +1,5 @@
+// The code in this file was given to us by our instructor, and we did not write it ourselves.
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'

@@ -1,3 +1,5 @@
+// The code in this file was given to us by our instructor, and we did not write it ourselves.
+
 // reactServer.cjs
 // Uses common javascript to serve the react build folder (/dist)
 

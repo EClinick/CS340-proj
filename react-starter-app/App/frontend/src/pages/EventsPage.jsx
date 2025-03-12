@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import DocumentTitle from '../components/DocumentTitle';
 import Navbar from '../components/Navbar';
 import Toast from '../components/Toast';
 

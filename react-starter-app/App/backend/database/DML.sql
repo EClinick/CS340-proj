@@ -8,10 +8,6 @@
 -- Events Table
 -----------------
 
-/*
-Added the query used to fill the Venues dropdown on the Events page.
-*/
-
 -- INSERT: Create a new event
 INSERT INTO Events (eventName, eventDate, venueID, eventDescription)
 VALUES (:eventNameInput, :eventDateInput, :venueIDInput, :eventDescriptionInput);
@@ -51,11 +47,6 @@ WHERE eventID = :eventIDInput;
 -- Attendees Table
 -------------------
 
-/*
-Added the query used to fill the register for event dropdown on the Attendees page.
-*/
-
-
 -- INSERT: Create a new attendee
 INSERT INTO Attendees (fName, lName, email)
 VALUES (:firstNameInput, :lastNameInput, :emailInput);
@@ -91,10 +82,6 @@ WHERE attendeeID = :attendeeIDInput;
 ------------------
 -- Speakers Table
 ------------------
-
-/*
-Added the query used to fill the events dropdown on the Speakers page.
-*/
 
 -- INSERT: Create a new speaker
 INSERT INTO Speakers (eventID, fName, lName, specialization)
@@ -162,11 +149,6 @@ WHERE venueID = :venueIDInput;
 ------------------------
 -- EventAttendees Table
 ------------------------
-
-/*
-Created an UPDATE statement to update an EventAttendee relationship. Uses :eventIDInput and :attendeeIDInput.
-Added the query used to fill the event and attendee dropdowns on the EventAttendees page.
-*/
 
 -- INSERT: Create a new EventAttendees relationship
 INSERT INTO EventAttendees (eventID, attendeeID)

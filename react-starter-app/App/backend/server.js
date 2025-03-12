@@ -1,3 +1,6 @@
+// The code in this file was given to us by our instructor, and we did not write it ourselves.
+// The only code we wrote here was the api routes for the backend CRUD operations.
+
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();

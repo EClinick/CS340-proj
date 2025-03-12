@@ -48,26 +48,8 @@ CREATE OR REPLACE TABLE Speakers (
     -- ^This FK is set to NULL because a speaker may not be associated with an event, or they were removed from an event.
 );
 
--- OLD VERSION WITH "HARD CODING FKs"
 
--- -- Create table for EventAttendees (junction table)
--- CREATE OR REPLACE TABLE EventAttendees (
---     eventAttendeeID INT AUTO_INCREMENT PRIMARY KEY,
---     eventID INT NOT NULL,
---     attendeeID INT NOT NULL,
---     FOREIGN KEY (eventID) REFERENCES Events(eventID) ON DELETE CASCADE,
---     FOREIGN KEY (attendeeID) REFERENCES Attendees(attendeeID) ON DELETE CASCADE
--- );
-
--- NEW VERSION Removing Auto Increment
--- Create table for EventAttendees (junction table)
-
-/*
-This new version of the EventAttendees table uses a composite primary key, which
-is a combination of the eventID and attendeeID. This means that each combination of eventID and attendeeID must be unique, 
-allowing for a many-to-many relationship between events and attendees without needing an additional auto-incrementing ID.
-*/
-
+-- Create table for EventAttendees
 CREATE OR REPLACE TABLE EventAttendees (
     eventID INT NOT NULL,
     attendeeID INT NOT NULL,
