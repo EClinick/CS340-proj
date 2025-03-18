@@ -5,5 +5,7 @@ Any file that was not completely handwritten by either Ethan Clinick or Dawson B
 
 If a file has the above comment, it should be known that the code within that file came from the resource at the top of this file. 
 
+The dependency lists were also a part of the initial pull from the above github address.
+
 Thank you,
 Group 87
